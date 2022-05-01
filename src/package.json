@@ -9,6 +9,7 @@
   "author": "Keith Noel, Leandro Kaklamanos, Dylan",
   "license": "MIT",
   "dependencies": {
-    "discord": "^0.8.2"
+    "discord": "^0.8.2",
+    "twilio": "^3.76.1"
   }
 }
