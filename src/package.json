@@ -1,0 +1,14 @@
+{
+  "name": "sos-bot",
+  "version": "0.0.1",
+  "description": "A discord bot that provides help fast through calls",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Keith Noel, Leandro Kaklamanos, Dylan",
+  "license": "MIT",
+  "dependencies": {
+    "discord": "^0.8.2"
+  }
+}
