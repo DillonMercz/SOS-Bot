@@ -9,7 +9,11 @@
   "author": "Keith Noel, Leandro Kaklamanos, Dylan",
   "license": "MIT",
   "dependencies": {
-    "discord": "^0.8.2",
-    "twilio": "^3.76.1"
+    "@discordjs/rest": "^0.4.1",
+    "discord-api-types": "^0.32.0",
+    "discord.js": "^13.6.0"
+  },
+  "devDependencies": {
+    "twilio-cli": "^3.3.2"
   }
 }
