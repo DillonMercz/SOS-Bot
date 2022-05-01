@@ -25,9 +25,9 @@ const getHelp = () => `Usage: *[COMMAND] [ARGUMENTS]\n displays this help messag
 const guildMap = new Map()
 let voiceConnection;
 
-client.on("start", function(start){
-  console.log(`channelCreate: ${start}`);
-});
+// client.on("start", function(start){
+//   console.log(`channelCreate: ${start}`);
+// });
 
 io.on('connection', connectionwssfunc)
 
