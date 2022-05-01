@@ -1,3 +1,3 @@
 # Discord SOSBot
 
-AN SOSbot that allows people to add SOS lines for rapid deployment to warzones and dangerous areas through the discord.
+An SOSbot that allows people to add SOS lines for rapid deployment to warzones and dangerous areas through the discord.
