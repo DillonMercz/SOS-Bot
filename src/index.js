@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
-
-const token = ""
+require('dotenv').config;
+const token = process.env.DISCORD_TOKEN
 var inviteLink = "";
 
 client.on("channelCreate", function(channel){
