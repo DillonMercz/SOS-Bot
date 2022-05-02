@@ -8,7 +8,7 @@ const server = require("http").createServer(app);
 // const io = require("socket.io")(server);
 const twilioConfig = require("./twilioConfig");
 const wss = new ws.Server({ server });
-
+const path = require('path')
 
 // constants
 const PORT = process.env.SERVER_PORT || 8080;
@@ -98,5 +98,5 @@ app.post("/", (req, res) => {
 
 wss.on("connection", connectionWssFunc);
 // 
-const listenfunc = () => console.log("server running on "+port);
+const listenfunc = () => console.log("server running on "+PORT);
 server.listen(PORT, listenfunc);
