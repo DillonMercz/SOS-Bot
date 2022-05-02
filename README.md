@@ -29,3 +29,8 @@ npx twilio profiles:use [insert account name here]
 
 🎉 Congrats! 🎉 you have your twilio account setup. Now for the next part:
 
+```
+npx twilio phone-numbers:list
+```
+
+This will give you a list of your current numbers through twilio. If you do not have anything listed here you will need to buy
