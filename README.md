@@ -11,6 +11,8 @@ After having the repo on the machine run the command:
 npm i
 npm start
 ```
+
+### Twilio Setup
 This will start the server and allow you to call using your twilio number. 
 
 Before you can get people calling you will need a number from twilio. I recommend setting up the twilio-cli globally on your machine but you don't need to if you have installed this repository as it comes installed here. 
@@ -33,4 +35,28 @@ npx twilio profiles:use [insert account name here]
 npx twilio phone-numbers:list
 ```
 
-This will give you a list of your current numbers through twilio. If you do not have anything listed here you will need to buy
+This will give you a list of your current numbers through twilio. If you do not have anything listed here you will need to buy a phone number with the command:
+
+```
+npx twilio phone-numbers:buy
+```
+
+Follow the instructions from there. YOu can always refer to this if you want to buy more numbers if you already have one.
+
+### Ngrok Setup
+
+You will need to install and start an Ngrok tunnel for twilio to have a public address to call into. This is rather simple. 
+
+Ngrok provides easy installation instructions on their site [here](https://ngrok.com/download).
+
+After installing Ngrok, you will need to start a tunnel to do that simply run the command
+
+```
+ngrok http [use the same port that your server is listening]
+```
+
+The ngrok default is port 80 which is also present on their site if you scroll down.
+
+
+
+
