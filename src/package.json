@@ -7,7 +7,7 @@
     "start": "node .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Keith Noel, Leandro Kaklamanos, Dylan",
+  "author": "Keith Noel, Leandro Kaklamanos, Dylan Clayton",
   "license": "MIT",
   "dependencies": {
     "@discordjs/rest": "^0.4.1",
