@@ -80,7 +80,7 @@ const connectionWssFunc = (ws) => {
 };
 // io.on('connection', connectionwssfunc)
 // listen callback
-app.get("/", (req, res) => res.sendFile(path.join(__dirname, "/index.html")));
+app.get("/", (req, res) => res.send("welcome user"));
 
 app.post("/", (req, res) => {
   res.set("Content-Type", "text/xml");
