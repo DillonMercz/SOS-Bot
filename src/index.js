@@ -8,7 +8,7 @@ const server = require("http").createServer(app);
 // const io = require("socket.io")(server);
 const twilioConfig = require("./twilioConfig");
 const wss = new ws.Server({ server });
-const path = require('path')
+const path = require("path");
 
 // constants
 const PORT = process.env.SERVER_PORT || 8080;
@@ -48,24 +48,24 @@ const connectionWssFunc = (ws) => {
         break;
       case "start":
         console.log(`Starting Media Stream ${msg.streamSid}`);
-        // Create Stream to the Google Speech to Text API
-        // recognizeStream = client
-        //   .streamingRecognize(request)
-        //   .on("error", console.error)
-        //   .on("data", (data) => {
-        //     console.log(data.results[0].alternatives[0].transcript);
-        //     wss.clients.forEach((client) => {
-        //       if (client.readyState === WebSocket.OPEN) {
-        //         client.send(
-        //           JSON.stringify({
-        //             event: "interim-transcription",
-        //             text: data.results[0].alternatives[0].transcript,
-        //           })
-        //         );
-        //       }
-        //     });
-        //   });
-        // break;
+      // Create Stream to the Google Speech to Text API
+      // recognizeStream = client
+      //   .streamingRecognize(request)
+      //   .on("error", console.error)
+      //   .on("data", (data) => {
+      //     console.log(data.results[0].alternatives[0].transcript);
+      //     wss.clients.forEach((client) => {
+      //       if (client.readyState === WebSocket.OPEN) {
+      //         client.send(
+      //           JSON.stringify({
+      //             event: "interim-transcription",
+      //             text: data.results[0].alternatives[0].transcript,
+      //           })
+      //         );
+      //       }
+      //     });
+      //   });
+      // break;
       case "media":
         // Write Media Packets to the recognize stream
         console.log(`Audio being Recieved...`);
@@ -97,6 +97,6 @@ app.post("/", (req, res) => {
 });
 
 wss.on("connection", connectionWssFunc);
-// 
-const listenfunc = () => console.log("server running on "+PORT);
+//
+const listenfunc = () => console.log("server running on " + PORT);
 server.listen(PORT, listenfunc);
