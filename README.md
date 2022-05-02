@@ -56,6 +56,7 @@ ngrok http [use the same port that your server is listening]
 ```
 
 The ngrok default is port 80 which is also present on their site if you scroll down.
+Add your authtoken
 
 
 
