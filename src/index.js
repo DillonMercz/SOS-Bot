@@ -1,10 +1,13 @@
 require('dotenv').config;
 const Discord = require('discord.js');
+const { WebSocketServer } = require('ws');
 const client = new Discord.Client();
+const ws = require('ws');
 const app = require('express')();
 const server = require('http').Server(app);
-const io = require("socket.io")(server);
-
+// const io = require("socket.io")(server);
+const twilioConfig = require('./twilioConfig')
+const wss = new ws.Server({server})
 // constants
 const port = process.env.PORT || 8080;
 const discordToken = process.env.DISCORD_TOKEN
@@ -19,7 +22,6 @@ const _CMD_TEST        = PREFIX + 'test';
 const _CMD_RESET       = PREFIX + 'reset';
 const _CMD_CONVOLOG    = PREFIX + 'convo';
 // help function
-
 const getHelp = () => `Usage: *[COMMAND] [ARGUMENTS]\n displays this help message: ${_CMD_HELP}\n ends call of the user \n ${_CMD_END_CALL} [USER]\n displays the conversation logs of the user ${_CMD_CONVOLOG} [USER] \n`
 const guildMap = new Map()
 let voiceConnection;
@@ -29,8 +31,9 @@ let voiceConnection;
   // });
   
   // connection callback
-  const connectionwssfunc = () => console.log('user is connected')
-  io.on('connection', connectionwssfunc)
+  const connectionwssfunc = () => console.log('New connection Established')
+  // io.on('connection', connectionwssfunc)
   // listen callback
+  wss.on('connection', connectionWssFunc)
   const listenfunc = () => console.log('server running');
   server.listen(port, listenfunc)
