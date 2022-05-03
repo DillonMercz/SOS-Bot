@@ -13,7 +13,7 @@ const wss = new ws.Server({ server });
 const path = require("path");
 const { PassThrough } = require("stream");
 const TwilioMediaStreamSaveAudioFile = require("twilio-media-stream-save-audio-file");
-
+// currently not used
 const mediaStreamSaver = new TwilioMediaStreamSaveAudioFile({
   saveLocation: __dirname,
   saveFilename: `/${Date.now()}.wav`,
@@ -133,7 +133,7 @@ const connectionWssFunc = (ws) => {
             0x00 // Those last 4 bytes are the data length
           ])
         );
-        ws.rstream = fs.createReadStream(_dirname + `/${Date.now()}.wav`, {
+        ws.rstream = fs.createReadStream(__dirname + `/${Date.now()}.wav`, {
           encoding: "binary",
         });
         buffer = ws.rstream;
