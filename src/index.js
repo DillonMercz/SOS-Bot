@@ -1,5 +1,5 @@
 require("dotenv").config;
-// const Discord = require('discord.js');
+const Discord = require('discord.js');
 const { WebSocketServer } = require("ws");
 // const client = new Discord.Client();
 const ws = require("ws");
@@ -28,10 +28,18 @@ const _CMD_CONVOLOG = PREFIX + "convo";
 
 // help discord bot function
 const getHelp = () =>
-  `Usage: *[COMMAND] [ARGUMENTS]\n displays this help message: ${_CMD_HELP}\n ends call of the user \n ${_CMD_END_CALL} [USER]\n displays the conversation logs of the user ${_CMD_CONVOLOG} [USER] \n`;
+`Usage: *[COMMAND] [ARGUMENTS]\n displays this help message: ${_CMD_HELP}\n ends call of the user \n ${_CMD_END_CALL} [USER]\n displays the conversation logs of the user ${_CMD_CONVOLOG} [USER] \n`;
 const guildMap = new Map();
 let voiceConnection;
 
+// Create the encoder.
+// Specify 48kHz sampling rate and 2 channel size.
+const encoder = new OpusEncoder(48000, 2);
+
+// Encode and decode.
+let buffer;
+let encoded;
+let decoded = encoder.decode(encoded);
 // client.on("start", function(start){
 //   console.log(`channelCreate: ${start}`);
 // });
@@ -40,6 +48,7 @@ let voiceConnection;
 const connectionWssFunc = (ws) => {
   console.log("New connection Established");
   let recognizeStream = null;
+  let payload;
 
   ws.on("message", function incoming(message) {
     const msg = JSON.parse(message);
@@ -49,6 +58,10 @@ const connectionWssFunc = (ws) => {
         break;
       case "start":
         console.log(`Starting Media Stream ${msg.streamSid}`);
+        let streamSid = msg.start.streamSid;
+        buffer = Buffer.from(streamSid);
+        encoded = encoder.encode(buffer);
+        decoded = encoder.decode(encoded);
       // Create Stream to the Google Speech to Text API
       // recognizeStream = client
       //   .streamingRecognize(request)
@@ -66,10 +79,13 @@ const connectionWssFunc = (ws) => {
       //       }
       //     });
       //   });
-      // break;
+      break;
       case "media":
         // Write Media Packets to the recognize stream
         console.log(`Audio being Recieved...`);
+        buffer = Buffer.from(msg.media.payload)
+        payload = msg.media.payload
+        console.table({buffer, encoded, decoded, payload})
         // recognizeStream.write(msg.media.payload);
         break;
       case "stop":
@@ -103,13 +119,4 @@ const listenfunc = () => console.log("server running on " + PORT);
 server.listen(PORT, listenfunc);
 
 
-/* discord js  */
 
-
-// Create the encoder.
-// Specify 48kHz sampling rate and 2 channel size.
-const encoder = new OpusEncoder(48000, 2);
-
-// Encode and decode.
-const encoded = encoder.encode(buffer);
-const decoded = encoder.decode(encoded);
