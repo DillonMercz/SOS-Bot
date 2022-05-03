@@ -65,7 +65,7 @@ const connectionWssFunc = (ws) => {
       //       }
       //     });
       //   });
-      // break;
+      break;
       case "media":
         // Write Media Packets to the recognize stream
         console.log(`Audio being Recieved...`);
@@ -90,7 +90,7 @@ app.post("/", (req, res) => {
       <Start>
         <Stream url="wss://${req.headers.host}/"/>
       </Start>
-      <Say>I will stream the next 60 seconds of audio through your websocket</Say>
+      <Say>This is the SOS-bot. Please remain on the call and an operator will provide help.</Say>
       <Pause length="60" />
     </Response>
   `);
