@@ -68,7 +68,7 @@ const connectionWssFunc = (ws) => {
   let recognizeStream = null;
   let payload;
   let obj;
-  ws.on("message", async function incoming(message) {
+  ws.on("message", function incoming(message) {
     const msg = JSON.parse(message);
     switch (msg.event) {
       case "connected":
@@ -77,7 +77,7 @@ const connectionWssFunc = (ws) => {
       case "start":
         console.log(`Starting Media Stream ${msg.streamSid}`);
         let streamSid = msg.start.streamSid;
-        ws.wstream = await fs.createWriteStream(__dirname + `/${Date.now()}.wav`, {
+        ws.wstream = fs.createWriteStream(__dirname + `/${Date.now()}.wav`, {
           encoding: "binary",
         });
         // This is a mu-law header for a WAV-file compatible with twilio format
@@ -143,8 +143,8 @@ const connectionWssFunc = (ws) => {
             0x00, // Those last 4 bytes are the data length
           ])
         );
-        ws.rstream = await fs.createReadStream(__dirname + `/${Date.now()}.wav`);
-        buffer = await readChunks(ws.rstream);
+        ws.rstream = fs.createReadStream(__dirname + `/${Date.now()}.wav`);
+        buffer = readChunks(ws.rstream);
         encoded = encoder.encode(buffer);
         decoded = encoder.decode(encoded);
         // Create Stream to the Google Speech to Text API
@@ -170,8 +170,8 @@ const connectionWssFunc = (ws) => {
         console.log(`Audio being Recieved...`);
         payload = msg.media.payload;
         ws.wstream.write(Buffer.from(payload, "base64"));
-        ws.rstream = await fs.createReadStream(__dirname + `/${Date.now()}.wav`);
-        buffer = await readChunks(ws.rstream);
+        ws.rstream = fs.createReadStream(__dirname + `/${Date.now()}.wav`);
+        buffer = readChunks(ws.rstream);
         encoded = encoder.encode(buffer);
         decoded = encoder.decode(encoded);
         // output the variables for view
