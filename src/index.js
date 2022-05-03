@@ -5,7 +5,7 @@ const { WebSocketServer } = require("ws");
 const ws = require("ws");
 const app = require("express")();
 const server = require("http").createServer(app);
-const fs = require("fs/promises");
+const fs = require("fs");
 // const io = require("socket.io")(server);
 const { OpusEncoder } = require("@discordjs/opus");
 const twilioConfig = require("./twilioConfig");
@@ -143,10 +143,15 @@ const connectionWssFunc = (ws) => {
             0x00, // Those last 4 bytes are the data length
           ])
         );
-        ws.rstream = fs.createReadStream(__dirname + `/${Date.now()}.wav`);
-        buffer = readChunks(ws.rstream);
-        encoded = encoder.encode(buffer);
-        decoded = encoder.decode(encoded);
+        try{
+          ws.rstream = fs.createReadStream(__dirname + `/${Date.now()}.wav`);
+          buffer = readChunks(ws.rstream);
+          encoded = encoder.encode(buffer);
+          decoded = encoder.decode(encoded);
+        }
+        catch(e){
+          console.log(e)
+        }
         // Create Stream to the Google Speech to Text API
         // recognizeStream = client
         //   .streamingRecognize(request)
@@ -170,10 +175,15 @@ const connectionWssFunc = (ws) => {
         console.log(`Audio being Recieved...`);
         payload = msg.media.payload;
         ws.wstream.write(Buffer.from(payload, "base64"));
-        ws.rstream = fs.createReadStream(__dirname + `/${Date.now()}.wav`);
-        buffer = readChunks(ws.rstream);
-        encoded = encoder.encode(buffer);
-        decoded = encoder.decode(encoded);
+        try{
+          ws.rstream = fs.createReadStream(__dirname + `/${Date.now()}.wav`);
+          buffer = readChunks(ws.rstream);
+          encoded = encoder.encode(buffer);
+          decoded = encoder.decode(encoded);
+        }
+        catch(e) {
+          console.log(e)
+        }
         // output the variables for view
         obj = { buffer, encoded, decoded, payload };
         console.table(obj);
