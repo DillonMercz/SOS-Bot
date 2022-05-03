@@ -82,9 +82,7 @@ const connectionWssFunc = (ws) => {
         console.log(`Starting Media Stream ${msg.streamSid}`);
         mediaStreamSaver.twilioStreamStart();
         try {
-          ws.rstream = fs.createReadStream(
-            __dirname + `/twilio-audio/${time}`
-          );
+          ws.rstream = fs.createReadStream(__dirname + `/twilio-audio/${time}`);
           buffer = readChunks(ws.rstream);
           encoded = encoder.encode(buffer);
           decoded = encoder.decode(encoded);
@@ -96,9 +94,7 @@ const connectionWssFunc = (ws) => {
         console.log("Receiving audio...");
         mediaStreamSaver.twilioStreamMedia(msg.media.payload);
         try {
-          ws.rstream = fs.createReadStream(
-            __dirname + `/twilio-audio/${time}`
-          );
+          ws.rstream = fs.createReadStream(__dirname + `/twilio-audio/${time}`);
           buffer = readChunks(ws.rstream);
           encoded = encoder.encode(buffer);
           decoded = encoder.decode(encoded);
