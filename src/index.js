@@ -3,9 +3,10 @@ require("dotenv").config;
 const { WebSocketServer } = require("ws");
 // const client = new Discord.Client();
 const ws = require("ws");
-const app = require("express")();
+const app = require("express")();  
 const server = require("http").createServer(app);
 // const io = require("socket.io")(server);
+const { OpusEncoder } = require('@discordjs/opus');
 const twilioConfig = require("./twilioConfig");
 const wss = new ws.Server({ server });
 const path = require("path");
@@ -102,8 +103,8 @@ const listenfunc = () => console.log("server running on " + PORT);
 server.listen(PORT, listenfunc);
 
 
+/* discord js  */
 
-const { OpusEncoder } = require('@discordjs/opus');
 
 // Create the encoder.
 // Specify 48kHz sampling rate and 2 channel size.
