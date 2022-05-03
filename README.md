@@ -41,8 +41,7 @@ This will give you a list of your current numbers through twilio. If you do not 
 npx twilio phone-numbers:buy
 ```
 
-Follow the instructions from there. YOu can always refer to this if you want to buy more numbers if you already have one.
-
+Follow the instructions from there. You can always refer to this if you want to buy more numbers if you already have one.
 ### Ngrok Setup
 
 You will need to install and start an Ngrok tunnel for twilio to have a public address to call into. This is rather simple. 
@@ -58,6 +57,9 @@ ngrok http [use the same port that your server is listening]
 The ngrok default is port 80 which is also present on their site if you scroll down.
 Add your authtoken
 
+```
+npx twilio phone-numbers:update $TWILIO_NUMBER --voice-url [insert the ngrok tunnel link here]
+```
 
 
 
