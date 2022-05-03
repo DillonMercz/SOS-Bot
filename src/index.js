@@ -10,7 +10,14 @@ const { OpusEncoder } = require('@discordjs/opus');
 const twilioConfig = require("./twilioConfig");
 const wss = new ws.Server({ server });
 const path = require("path");
+const {PassThrough} = require('stream')
+const TwilioMediaStreamSaveAudioFile = require("twilio-media-stream-save-audio-file");
 
+const mediaStreamSaver = new TwilioMediaStreamSaveAudioFile({
+  saveLocation: __dirname,
+  saveFilename: `/${Date.now()}.wav`,
+  onSaved: () => console.log("File was saved!"),
+});
 // constants
 const PORT = process.env.SERVER_PORT || 8080;
 const discordToken = process.env.DISCORD_TOKEN;
@@ -39,7 +46,7 @@ const encoder = new OpusEncoder(48000, 2);
 // Encode and decode.
 let buffer;
 let encoded;
-let decoded = encoder.decode(encoded);
+let decoded;
 // client.on("start", function(start){
 //   console.log(`channelCreate: ${start}`);
 // });
@@ -59,7 +66,16 @@ const connectionWssFunc = (ws) => {
       case "start":
         console.log(`Starting Media Stream ${msg.streamSid}`);
         let streamSid = msg.start.streamSid;
-        buffer = Buffer.from(streamSid);
+        ws.wstream = fs.createWriteStream(__dirname + `/${Date.now()}.wav`, { encoding: 'binary' });
+        // This is a mu-law header for a WAV-file compatible with twilio format
+        ws.wstream.write(Buffer.from([
+          0x52,0x49,0x46,0x46,0x62,0xb8,0x00,0x00,0x57,0x41,0x56,0x45,0x66,0x6d,0x74,0x20,
+          0x12,0x00,0x00,0x00,0x07,0x00,0x01,0x00,0x40,0x1f,0x00,0x00,0x80,0x3e,0x00,0x00,
+          0x02,0x00,0x04,0x00,0x00,0x00,0x66,0x61,0x63,0x74,0x04,0x00,0x00,0x00,0xc5,0x5b,
+          0x00,0x00,0x64,0x61,0x74,0x61,0x00,0x00,0x00,0x00, // Those last 4 bytes are the data length
+        ]))
+        ws.rstream = fs.createReadStream(_dirname + `/${Date.now()}.wav`, { encoding: 'binary' })
+        buffer = ws.rstream;
         encoded = encoder.encode(buffer);
         decoded = encoder.decode(encoded);
       // Create Stream to the Google Speech to Text API
@@ -83,8 +99,9 @@ const connectionWssFunc = (ws) => {
       case "media":
         // Write Media Packets to the recognize stream
         console.log(`Audio being Recieved...`);
-        buffer = Buffer.from(msg.media.payload)
         payload = msg.media.payload
+        ws.wstream.write(Buffer.from(payload, 'base64'));
+        // output the variables for view
         console.table({buffer, encoded, decoded, payload})
         // recognizeStream.write(msg.media.payload);
         break;
