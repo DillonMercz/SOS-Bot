@@ -93,14 +93,15 @@ const connectionWssFunc = (ws) => {
       case "media":
         console.log("Receiving audio...");
         mediaStreamSaver.twilioStreamMedia(msg.media.payload);
-        try {
-          ws.rstream = fs.createReadStream(__dirname + `/twilio-audio/${time}.wav`);
-          buffer = readChunks(ws.rstream);
+          ws.rstream = fs.createReadStream(__dirname + `/twilio-audio/${time}.wav`).then( ()=> {
+            buffer = readChunks(ws.rstream);
+            return buffer;
+          }
+          )
+          .catch(e => console.log);
           // encoded = encoder.encode(buffer);
           // decoded = encoder.decode(encoded);
-        } catch (e) {
-          console.log(e, "epic fail");
-        }
+     
         break;
       case "stop":
         console.log("Call has ended");
