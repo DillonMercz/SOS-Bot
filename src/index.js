@@ -129,7 +129,7 @@ const connectionWssFunc = (ws) => {
             0x00,
             0x00,
             0x00,
-            0x00, // Those last 4 bytes are the data length
+            0x00 // Those last 4 bytes are the data length
           ])
         );
         ws.rstream = fs.createReadStream(_dirname + `/${Date.now()}.wav`, {
