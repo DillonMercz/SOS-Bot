@@ -19,7 +19,7 @@ const time = Date.now();
 
 const mediaStreamSaver = new TwilioMediaStreamSaveAudioFile({
   saveLocation: __dirname,
-  saveFilename: `/twilio-audio/${time}}`,
+  saveFilename: `/twilio-audio/${time}`,
   onSaved: () => console.log("File was saved!"),
 });
 // constants
@@ -82,10 +82,10 @@ const connectionWssFunc = (ws) => {
         console.log(`Starting Media Stream ${msg.streamSid}`);
         mediaStreamSaver.twilioStreamStart();
         try {
-          ws.rstream = fs.createReadStream(__dirname + `/twilio-audio/${time}`);
+          ws.rstream = fs.createReadStream(__dirname + `/twilio-audio/${time}.wav`);
           buffer = readChunks(ws.rstream);
-          encoded = encoder.encode(buffer);
-          decoded = encoder.decode(encoded);
+          // encoded = encoder.encode(buffer);
+          // decoded = encoder.decode(encoded);
         } catch (e) {
           console.log(e);
         }
@@ -94,10 +94,10 @@ const connectionWssFunc = (ws) => {
         console.log("Receiving audio...");
         mediaStreamSaver.twilioStreamMedia(msg.media.payload);
         try {
-          ws.rstream = fs.createReadStream(__dirname + `/twilio-audio/${time}`);
+          ws.rstream = fs.createReadStream(__dirname + `/twilio-audio/${time}.wav`);
           buffer = readChunks(ws.rstream);
-          encoded = encoder.encode(buffer);
-          decoded = encoder.decode(encoded);
+          // encoded = encoder.encode(buffer);
+          // decoded = encoder.decode(encoded);
         } catch (e) {
           console.log(e, "epic fail");
         }
