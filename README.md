@@ -8,6 +8,7 @@ Make sure to clone the repository into your machine.
 
 After having the repo on the machine run the command:
 ```
+cd ./src
 npm i
 npm start
 ```
