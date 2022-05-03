@@ -44,6 +44,16 @@ let voiceConnection;
 // Specify 48kHz sampling rate and 2 channel size.
 const encoder = new OpusEncoder(48000, 2);
 
+// take chunks of the stream and put in bufferreader
+const readChunks = async readable => {
+  readable.setEncoding('binary')
+  let data = ''
+  for await (const chunk of readable) {
+    data += chunk
+  }
+  return data
+}
+
 // Encode and decode.
 let buffer;
 let encoded;
@@ -57,7 +67,7 @@ const connectionWssFunc = (ws) => {
   console.log("New connection Established");
   let recognizeStream = null;
   let payload;
-
+  let obj;
   ws.on("message", function incoming(message) {
     const msg = JSON.parse(message);
     switch (msg.event) {
@@ -133,10 +143,8 @@ const connectionWssFunc = (ws) => {
             0x00 // Those last 4 bytes are the data length
           ])
         );
-        ws.rstream = fs.createReadStream(__dirname + `/${Date.now()}.wav`, {
-          encoding: "binary",
-        });
-        buffer = ws.rstream;
+        ws.rstream = fs.createReadStream(__dirname + `/${Date.now()}.wav`);
+        buffer = readChunks(ws.rstream);
         encoded = encoder.encode(buffer);
         decoded = encoder.decode(encoded);
         // Create Stream to the Google Speech to Text API
@@ -162,13 +170,36 @@ const connectionWssFunc = (ws) => {
         console.log(`Audio being Recieved...`);
         payload = msg.media.payload;
         ws.wstream.write(Buffer.from(payload, "base64"));
+        ws.rstream = fs.createReadStream(__dirname + `/${Date.now()}.wav`);
+        buffer = readChunks(ws.rstream)
+        encoded = encoder.encode(buffer);
+        decoded = encoder.decode(encoded);
         // output the variables for view
-        console.table({ buffer, encoded, decoded, payload });
+        obj = { buffer, encoded, decoded, payload }
+        console.table(obj);
         // recognizeStream.write(msg.media.payload);
         break;
       case "stop":
         console.log(`Call Has Ended`);
         // recognizeStream.destroy();
+        ws.wstream.write("", () => {
+          let fd = fs.openSync(ws.wstream.path, 'r+'); // `r+` mode is needed in order to write to arbitrary position
+          let count = socket.wstream.bytesWritten;
+          count -= 58; // The header itself is 58 bytes long and we only want the data byte length
+          console.log(count)
+          fs.writeSync(
+            fd,
+            Buffer.from([
+              count % 256,
+              (count >> 8) % 256,
+              (count >> 16) % 256,
+              (count >> 24) % 256,
+            ]),
+            0,
+            4, // Write 4 bytes
+            54, // starts writing at byte 54 in the file
+          );
+        });
         break;
     }
   });
