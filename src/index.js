@@ -5,7 +5,7 @@ const { WebSocketServer } = require("ws");
 const ws = require("ws");
 const app = require("express")();
 const server = require("http").createServer(app);
-const fs = require("fs")
+const fs = require("fs/promises");
 // const io = require("socket.io")(server);
 const { OpusEncoder } = require("@discordjs/opus");
 const twilioConfig = require("./twilioConfig");
@@ -45,14 +45,14 @@ let voiceConnection;
 const encoder = new OpusEncoder(48000, 2);
 
 // take chunks of the stream and put in bufferreader
-const readChunks = async readable => {
-  readable.setEncoding('binary')
-  let data = ''
+const readChunks = async (readable) => {
+  readable.setEncoding("binary");
+  let data = "";
   for await (const chunk of readable) {
-    data += chunk
+    data += chunk;
   }
-  return data
-}
+  return data;
+};
 
 // Encode and decode.
 let buffer;
@@ -77,7 +77,7 @@ const connectionWssFunc = (ws) => {
       case "start":
         console.log(`Starting Media Stream ${msg.streamSid}`);
         let streamSid = msg.start.streamSid;
-        ws.wstream = fs.createWriteStream(__dirname + `/${Date.now()}.wav`, {
+        ws.wstream = await fs.createWriteStream(__dirname + `/${Date.now()}.wav`, {
           encoding: "binary",
         });
         // This is a mu-law header for a WAV-file compatible with twilio format
@@ -140,11 +140,11 @@ const connectionWssFunc = (ws) => {
             0x00,
             0x00,
             0x00,
-            0x00 // Those last 4 bytes are the data length
+            0x00, // Those last 4 bytes are the data length
           ])
         );
-        ws.rstream = fs.createReadStream(__dirname + `/${Date.now()}.wav`);
-        buffer = readChunks(ws.rstream);
+        ws.rstream = await fs.createReadStream(__dirname + `/${Date.now()}.wav`);
+        buffer = await readChunks(ws.rstream);
         encoded = encoder.encode(buffer);
         decoded = encoder.decode(encoded);
         // Create Stream to the Google Speech to Text API
@@ -171,11 +171,11 @@ const connectionWssFunc = (ws) => {
         payload = msg.media.payload;
         ws.wstream.write(Buffer.from(payload, "base64"));
         ws.rstream = fs.createReadStream(__dirname + `/${Date.now()}.wav`);
-        buffer = readChunks(ws.rstream)
+        buffer = await readChunks(ws.rstream);
         encoded = encoder.encode(buffer);
         decoded = encoder.decode(encoded);
         // output the variables for view
-        obj = { buffer, encoded, decoded, payload }
+        obj = { buffer, encoded, decoded, payload };
         console.table(obj);
         // recognizeStream.write(msg.media.payload);
         break;
@@ -183,10 +183,10 @@ const connectionWssFunc = (ws) => {
         console.log(`Call Has Ended`);
         // recognizeStream.destroy();
         ws.wstream.write("", () => {
-          let fd = fs.openSync(ws.wstream.path, 'r+'); // `r+` mode is needed in order to write to arbitrary position
+          let fd = fs.openSync(ws.wstream.path, "r+"); // `r+` mode is needed in order to write to arbitrary position
           let count = socket.wstream.bytesWritten;
           count -= 58; // The header itself is 58 bytes long and we only want the data byte length
-          console.log(count)
+          console.log(count);
           fs.writeSync(
             fd,
             Buffer.from([
@@ -197,7 +197,7 @@ const connectionWssFunc = (ws) => {
             ]),
             0,
             4, // Write 4 bytes
-            54, // starts writing at byte 54 in the file
+            54 // starts writing at byte 54 in the file
           );
         });
         break;
