@@ -68,7 +68,7 @@ const connectionWssFunc = (ws) => {
   let recognizeStream = null;
   let payload;
   let obj;
-  ws.on("message", function incoming(message) {
+  ws.on("message", async function incoming(message) {
     const msg = JSON.parse(message);
     switch (msg.event) {
       case "connected":
@@ -170,7 +170,7 @@ const connectionWssFunc = (ws) => {
         console.log(`Audio being Recieved...`);
         payload = msg.media.payload;
         ws.wstream.write(Buffer.from(payload, "base64"));
-        ws.rstream = fs.createReadStream(__dirname + `/${Date.now()}.wav`);
+        ws.rstream = await fs.createReadStream(__dirname + `/${Date.now()}.wav`);
         buffer = await readChunks(ws.rstream);
         encoded = encoder.encode(buffer);
         decoded = encoder.decode(encoded);
