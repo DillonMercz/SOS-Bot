@@ -10,6 +10,7 @@
   "author": "Keith Noel, Leandro Kaklamanos, Dylan Clayton",
   "license": "MIT",
   "dependencies": {
+    "@discordjs/opus": "^0.7.0",
     "@discordjs/rest": "^0.4.1",
     "discord-api-types": "^0.32.0",
     "discord.js": "^13.6.0",
