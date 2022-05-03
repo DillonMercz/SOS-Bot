@@ -17,7 +17,7 @@ const TwilioMediaStreamSaveAudioFile = require("twilio-media-stream-save-audio-f
 // currently not used
 const mediaStreamSaver = new TwilioMediaStreamSaveAudioFile({
   saveLocation: __dirname,
-  saveFilename: `/${Date.now()}.wav`,
+  saveFilename: `twilio-audio/${Date.now()}.wav`,
   onSaved: () => console.log("File was saved!"),
 });
 // constants
@@ -80,7 +80,7 @@ const connectionWssFunc = (ws) => {
         console.log(`Starting Media Stream ${msg.streamSid}`);
         mediaStreamSaver.twilioStreamStart();
         try{
-          ws.rstream = fs.createReadStream(__dirname + `/${Date.now()}.wav`);
+          ws.rstream = fs.createReadStream(__dirname + `twilio-audio/${Date.now()}.wav`);
           buffer = readChunks(ws.rstream);
           encoded = encoder.encode(buffer);
           decoded = encoder.decode(encoded);
