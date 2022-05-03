@@ -57,9 +57,10 @@ ngrok http [use the same port that your server is listening]
 The ngrok default is port 80 which is also present on their site if you scroll down.
 Add your authtoken
 
+Then run this command make sure that the TWILIO_NUMBER is set to your TWILIO_NUMBER.
 ```
 npx twilio phone-numbers:update $TWILIO_NUMBER --voice-url [insert the ngrok tunnel link here]
 ```
 
-
+🎠 Okay your set up is all done!
 
